@@ -22,6 +22,13 @@ public class playerController : MonoBehaviour
         GroundCheck();
         
     }
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.CompareTag("Pickup"))
+        {
+            hit.gameObject.GetComponent<pickup>().Picked();
+        }
+    }
 
     private void GroundCheck()
     {
