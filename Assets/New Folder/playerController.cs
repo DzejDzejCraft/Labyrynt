@@ -7,8 +7,10 @@ public class playerController : MonoBehaviour
 {
     [SerializeField] float speed = 12f;
     [SerializeField] LayerMask groundMask;
-    Vector3 velocity;
+
+    float velocityY;
     CharacterController controller;
+    bool grounded;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,12 +35,12 @@ public class playerController : MonoBehaviour
     private void GroundCheck()
     {
         RaycastHit hit;
-        if(Physics.Raycast(transform.position,Vector3.down, out hit, 1.2f, groundMask))
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.2f, groundMask))
         {
+            grounded = true;
 
-            
             string groundType = hit.collider.tag;
-            
+
             switch (groundType)
             {
                 case "GroundFast":
@@ -50,8 +52,12 @@ public class playerController : MonoBehaviour
                 default:
                     speed = 12f;
                     break;
-                    
+
             }
+        }
+        else
+        {
+            grounded = false;
         }
         
                 
@@ -64,5 +70,15 @@ public class playerController : MonoBehaviour
 
         Vector3 move = (z* transform.forward) + (x*transform.right);
         controller.Move(move * speed * Time.deltaTime);
+        if (!grounded)
+        {
+            velocityY += 10 * Time.deltaTime;
+            if (velocityY > 30) velocityY = 30;
+            controller.Move(Vector3.down * velocityY * Time.deltaTime);
+        }
+        else
+        {
+            velocityY = 0;
+        }
     }
 }
